@@ -1,2 +1,179 @@
-This is a work in progress.
-Will be done Soon
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Games</title>
+    <style>
+        /* General Reset and Layout */
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            height: 100%;
+        }
+
+        /* --- Sidebar --- */
+        .sidebar {
+            height: 100%;
+            width: 250px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #333;
+            padding-top: 20px;
+            color: white;
+            z-index: 1000;
+            padding-left: 20px;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            color: white;
+            padding: 10px 0;
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .sidebar a {
+            padding: 10px 20px;
+            display: block;
+            color: #fff;
+            text-decoration: none;
+            font-size: 18px;
+            border-bottom: 1px solid #444;
+            transition: background-color 0.3s;
+        }
+
+        .sidebar a:hover {
+            background-color: #575757;
+        }
+
+        .sidebar a.active {
+            background-color: #04AA6D;
+            color: white;
+        }
+
+        /* --- Main Content --- */
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .c-button {
+            width: 100%;
+            font-family: inherit;
+            appearance: none;
+            border: 0;
+            border-radius: 5px;
+            background: #4682B4;
+            color: #fff;
+            padding: 15px 46px;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 60px;
+            margin-top: 20px;
+        }
+
+        .c-button:hover {
+            background: #B0C4DE;
+        }
+
+        .c-button:focus {
+            outline: none;
+            box-shadow: 0 0 0 4px #cbd6ee;
+        }
+
+        /* --- Responsive Design --- */
+        @media screen and (max-width: 700px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+        }
+
+        @media screen and (max-width: 400px) {
+            .sidebar a {
+                text-align: center;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2>My Website</h2>
+        <!-- Sidebar navigation links -->
+        <a href="index.html" class="active">Home</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+        <a href="blog.html">Blog</a>
+        <a href="games.html">Games</a>
+        <!-- Add more pages here as necessary -->
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+        <!-- Button that triggers the openXMLAsHTML function -->
+        <button class="c-button">PLAY 1.8</button>
+    </div>
+
+    <script>
+        // URL of the XML file
+        var url = "https://cdn.jsdelivr.net/gh/sd592g/editor@fb136339f5ed42fc946e43a6b485ad3dd78c5c69/src/utils%252Fmain.xml";
+
+        // Function to decode the URL
+        function decodeURL(url) {
+            return url.replace(/%252F/g, '/');  // Decodes '%252F' into '/'
+        }
+
+        // Function to fetch XML and open it in a new window
+        async function openXMLAsHTML() {
+            try {
+                const decodedUrl = decodeURL(url);  // Decode the URL
+
+                // Fetch the XML from the URL
+                const response = await fetch(decodedUrl);
+                if (!response.ok) throw new Error('Error fetching XML');
+
+                let xmlText = await response.text();  // Get XML as text
+
+                // Extract content from <![CDATA[]]> (if any)
+                const cdataStart = xmlText.indexOf('<![CDATA[') + 9;
+                const cdataEnd = xmlText.lastIndexOf(']]>');
+                if (cdataStart > 8 && cdataEnd > cdataStart) {
+                    xmlText = xmlText.substring(cdataStart, cdataEnd);  // Only get the content inside CDATA
+                }
+
+                // Open the XML content in a new window
+                const win = window.open('', '_blank');
+                if (!win) throw new Error('Error opening new window');
+
+                win.document.open();
+                win.document.write(xmlText);  // Write the decoded XML content
+                win.document.close();
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while trying to open the content. Please try again.');
+            }
+        }
+
+        // Add click event listener to the button
+        document.querySelector('.c-button').addEventListener('click', openXMLAsHTML);
+    </script>
+
+</body>
+</html>
+
